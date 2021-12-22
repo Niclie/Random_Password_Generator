@@ -1,45 +1,24 @@
 import random as rnd
 import string
 
-LETTERS = list(string.ascii_letters)
 UPPERCASE_LETTERS = list(string.ascii_uppercase)
 LOWERCASE_LETTERS = list(string.ascii_lowercase)
 DIGITS = list(string.digits)
-#SYMBOLS = list("!@#$%^&*()")
 SYMBOLS = list("!#$%&'()*+,-./:;<=>?@[\]^_`{|}~" + '"')
-CHARACTERS = [LETTERS, DIGITS, SYMBOLS]
-CHARACTERS_SIZE = len(CHARACTERS)
+CHARACTERS = {"UPPERCASE_LETTERS": UPPERCASE_LETTERS, "LOWERCASE_LETTERS": LOWERCASE_LETTERS, "DIGITS": DIGITS, "SYMBOLS": SYMBOLS}
 
-def generate_password(length, num_letters, num_digits, num_symbols):
+
+def generate_password(length, char_type):
     password = []
     
-    num = [num_letters, num_digits, num_symbols]
-    num_of_char_types = []
-    for i in range(CHARACTERS_SIZE):
-        if num[i] != 0:
-            num_of_char_types.append([i, num[i]])
-            
-    
     for i in range(length):
-        random_id = rnd.choice(range(len(num_of_char_types)))
-        random_elem = num_of_char_types[random_id]
-        char_type = random_elem[0]
-        match char_type:
-            case 0:
-                password.append(rnd.choice(LETTERS))
-                random_elem[1] -= 1
-            
-            case 1:
-                password.append(rnd.choice(DIGITS))
-                random_elem[1] -= 1
-            
-            case 2:
-                password.append(rnd.choice(SYMBOLS))
-                random_elem[1] -= 1
+        random_key = rnd.choice(list(char_type))
+        password.append(rnd.choice(CHARACTERS[random_key]))
+        char_type[random_key] -= 1
         
-        if random_elem[1] == 0:
-            del num_of_char_types[random_id]
-    
+        if char_type[random_key] == 0:
+            del char_type[random_key]
+        
     rnd.shuffle(password)
     
     return "".join(password)
@@ -53,24 +32,24 @@ def get_input():
     type = []
     if input("Enter 'c' for customize password \n'a' for include all characters \n:") == "c":
         if input("Include symbols?(y/n): ") == "y":
-            type.append("Symbols")
+            type.append("SYMBOLS")
         
         if input("Include numbers?(y/n): ") == "y":
-            type.append("Numbers")
+            type.append("DIGITS")
             
         if input("Include lower case letters?(y/n): ") == "y":
-            type.append("Lower case letters")
+            type.append("LOWERCASE_LETTERS")
             
         if input("Include upper case letters?(y/n): ") == "y":
-            type.append("Upper case letters")
+            type.append("UPPERCASE_LETTERS")
     else:
-        type = ["Symbols", "Numbers", "Lower case letters", "Upper case letters"]
+        type = ["SYMBOLS", "DIGITS", "LOWERCASE_LETTERS", "UPPERCASE_LETTERS"]
         
     char_types = constrained_sum_sample_pos(len(type), length)
     rnd.shuffle(type)
     rnd.shuffle(char_types)
     
-    return dict(zip(type, char_types))
+    return length, dict(zip(type, char_types))
 
 
 def check_num_characters(message, length, num_letters=0, num_digits=0, num_symbols=0, equalize=0):    
@@ -93,8 +72,10 @@ def constrained_sum_sample_pos(n, total):
 
 
 def main():
-    print(get_input())
-
+    len, dic = get_input()
+    passw = generate_password(len, dic)
+    
+    print(passw)
 
 if __name__ == "__main__":
     main()
