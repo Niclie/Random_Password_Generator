@@ -1,6 +1,6 @@
 import random as rnd
 import string
-
+""
 UPPERCASE_LETTERS = list(string.ascii_uppercase)
 LOWERCASE_LETTERS = list(string.ascii_lowercase)
 DIGITS = list(string.digits)
@@ -9,6 +9,15 @@ CHARACTERS = {"UPPERCASE_LETTERS": UPPERCASE_LETTERS, "LOWERCASE_LETTERS": LOWER
 
 
 def generate_password(length, char_type):
+    """funzione che genera una password basandosi sulla lunghezza e il tipo di elementi da includere descritti in un dizionario
+
+    Args:
+        length (Positive Integers): lunghezza della password
+        char_type (Dictionary): Dictionary contente la descrizione della password
+        
+    Returns:
+        String: password generata in modo casuale
+    """
     password = []
     
     for i in range(length):
@@ -25,6 +34,12 @@ def generate_password(length, char_type):
 
 
 def get_input():
+    """Funzione che si occupa di interagire con l'utente per permettergli di descrivere la password voluta
+
+    Returns:
+        Positive Integers: lunghezza della password
+        Dictionary: descrizione della password
+    """
     length = 0
     while length < 6:
         length = int(input("Enter length of password: "))
@@ -52,21 +67,17 @@ def get_input():
     return length, dict(zip(type, char_types))
 
 
-def check_num_characters(message, length, num_letters=0, num_digits=0, num_symbols=0, equalize=0):    
-    num = length + 1
-    while num > length - num_letters - num_digits - num_symbols:
-        num = input(message)
-        if num == "":
-            num = rnd.randint(0, length - num_letters - num_digits - num_symbols - 1)
-        else:
-            num = int(num)
-        
-    return num
-
 def constrained_sum_sample_pos(n, total):
     """Return a randomly chosen list of n positive integers summing to total.
-    Each such list is equally likely to occur."""
+    Each such list is equally likely to occur.
 
+    Args:
+        n (Integer): number of integers that sum is equal to total
+        total (Integer): total sum of n positive integers
+
+    Returns:
+        List of integers: list of integers that sum is equal to total
+    """
     dividers = sorted(rnd.sample(range(1, total), n - 1))
     return [a - b for a, b in zip(dividers + [total], [0] + dividers)]
 
